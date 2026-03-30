@@ -54,3 +54,5 @@ def test_apartment_polanka_cost_various():
 
     res_empty = manager.get_apartment_costs('nie-istnieje', 2025, 1)
     assert res_empty == 0.0
+
+    assert manager.get_apartment_costs('apart-polanka', 2025, 13) == 0.0

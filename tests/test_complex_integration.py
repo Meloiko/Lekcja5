@@ -51,3 +51,50 @@ def test_apartment_costs_with_optional_parameters():
 
     costs = manager.get_apartment_costs('apart-polanka')
     assert costs == 3532.0
+
+
+def test_create_apartment_settlement_balance_logic():
+    parameters = Parameters()
+    manager = Manager(parameters)
+    manager.load_data()
+
+    apartment_key = "apart-polanka"
+    year = 2025
+    month = 1
+
+    settlement = manager.create_apartment_settlement(apartment_key, year, month)
+    empty_settlement = manager.create_apartment_settlement(apartment_key, 2025, 2)
+
+    assert settlement.total_due_pln == 6590.00
+    assert settlement.apartment == apartment_key
+    assert settlement.year == year
+    assert settlement.month == month
+    assert isinstance(settlement.total_due_pln, float)
+    assert empty_settlement.total_due_pln == 0.0
+    assert empty_settlement.month == 2
+    assert hasattr(settlement, 'total_due_pln')
+    assert hasattr(settlement, 'apartment')
+    assert settlement.total_bills_pln == 910.00
+
+def test_create_apartment_full_logic():
+    parameters = Parameters()
+    manager = Manager(parameters)
+    manager.load_data()
+    apartment_key = "apart-polanka"
+
+    settlement_jan = manager.create_apartment_settlement(apartment_key, 2025, 1)
+
+    assert settlement_jan.total_rent_pln == 7500.00
+    assert settlement_jan.total_bills_pln == 910.00
+    assert settlement_jan.total_due_pln == 6590.00
+
+    settlement_feb = manager.create_apartment_settlement(apartment_key, 2025, 2)
+
+    assert settlement_feb.total_rent_pln == 0.00
+    assert settlement_feb.total_bills_pln == 0.0
+    assert settlement_feb.total_due_pln == 0.00
+    
+    assert settlement_jan.apartment == apartment_key
+    assert settlement_jan.month == 1
+    assert isinstance(settlement_jan.total_due_pln, float)
+    assert hasattr(settlement_jan, 'total_rent_pln')
