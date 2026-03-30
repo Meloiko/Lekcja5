@@ -37,3 +37,20 @@ def test_apartment_polanka_costs():
     result = manager.get_apartment_costs('apart-polanka', 2025, 1)
     assert result == 910.00
     assert isinstance(result, float)
+
+def test_apartment_polanka_cost_various():
+    parameters = Parameters()
+    manager = Manager(parameters)
+    manager.load_data()
+
+    res_full = manager.get_apartment_costs('apart-polanka', 2025, 1)
+    assert res_full == 910.00
+
+    res_year = manager.get_apartment_costs('apart-polanka', 2025)
+    assert res_year >= 910.0
+
+    res_all = manager.get_apartment_costs('apart-polanka')
+    assert res_all >= res_year
+
+    res_empty = manager.get_apartment_costs('nie-istnieje', 2025, 1)
+    assert res_empty == 0.0
